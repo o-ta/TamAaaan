@@ -14,13 +14,12 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 /**
  * @author o-ta
  *
  */
-public class MainView extends SurfaceView implements SurfaceHolder.Callback, Runnable
+public class MainView extends Temperament implements SurfaceHolder.Callback, Runnable
 {
 	private static int SAMPLING_RATE = 44100;
 	private static int BUFFER = 1024;
@@ -39,6 +38,8 @@ public class MainView extends SurfaceView implements SurfaceHolder.Callback, Run
 	private ArrayList<Circle> container;
 	private int width;
 	private int height;
+
+	private int counter;
 
 	public MainView(Context context)
 	{
@@ -129,7 +130,7 @@ public class MainView extends SurfaceView implements SurfaceHolder.Callback, Run
 			while(sSize > 0)
 			{
 				sData = sContainer.get(sSize-1);
-				paint.setColor(Color.argb((int)(255*sData.volume), sData.cr, 255, sData.cb));
+				paint.setColor(Color.argb((int)(255*sData.volume), sData.cr, sData.cg, sData.cb));
 				canvas.drawCircle(sData.x, sData.y, sData.radius, paint);
 				sData.render();
 				if(sData.state == 3) sContainer.remove(sData);
@@ -171,11 +172,20 @@ public class MainView extends SurfaceView implements SurfaceHolder.Callback, Run
 						a.dy += ma*ab_y;
 						b.dx += mb*ab_x;
 						b.dy += mb*ab_y;
-						
+
 						// ---------------------------------------------
 						// 衝突時に音
 						//						float frequency = (float) (440 * Math.pow(2, ((1.0 / 12.0) * 20 * Math.random())));
-						sContainer.add(new SoundData(temperament(),0.4f, 0.01f, 2, 0.8f, a.x, a.y));
+						if (counter%3 == 0) {
+							sContainer.add(new SoundData(ionicTemperament(),0.4f, 0.01f, 2, 0.8f, a.x, a.y, a.cr, a.cg, a.cb));
+						} else if (counter%2 == 0) {
+							sContainer.add(new SoundData(ionicTemperament01(),0.4f, 0.01f, 2, 0.8f, a.x, a.y, a.cr, a.cg, a.cb));		
+						} else if (counter%4 == 0) {
+							sContainer.add(new SoundData(ionicTemperament02(),0.4f, 0.01f, 2, 0.8f, a.x, a.y, a.cr, a.cg, a.cb));
+						} else if (counter%5 == 0) {
+							sContainer.add(new SoundData(ionicTemperament(),0.4f, 0.01f, 2, 0.8f, a.x, a.y, a.cr, a.cg, a.cb));	
+						}
+						counter++;
 
 						// ---------------------------------------------
 					}
@@ -225,11 +235,6 @@ public class MainView extends SurfaceView implements SurfaceHolder.Callback, Run
 	{
 		if(event.getAction() == MotionEvent.ACTION_DOWN)
 		{
-			float frequency;
-
-			//			float frequency = (float) (440 * Math.pow(2, ((1.0 / 12.0) * 20 * Math.random())));
-			sContainer.add(new SoundData(pitaTemperament(),0.4f, 0.01f, 2, 0.8f, event.getX(), event.getY()));
-
 			float x = event.getX();
 			float y = event.getY();
 			float dx = (float)(Math.random()*10-5);
@@ -240,6 +245,18 @@ public class MainView extends SurfaceView implements SurfaceHolder.Callback, Run
 			int cr = (int)(255 * Math.random());
 			int cb = (int)(255 * Math.random());
 			int cg = (int)(255 * Math.random());
+
+			//			float frequency = (float) (440 * Math.pow(2, ((1.0 / 12.0) * 20 * Math.random())));
+			if (counter%3 == 0) {
+				sContainer.add(new SoundData(ionicTemperament(),0.4f, 0.01f, 2, 0.8f, event.getX(), event.getY(), cr, cg, cb));
+			} else if (counter%2 == 0) {
+				sContainer.add(new SoundData(ionicTemperament01(),0.4f, 0.01f, 2, 0.8f, event.getX(), event.getY(), cr, cg, cb));		
+			} else if (counter%4 == 0) {
+				sContainer.add(new SoundData(ionicTemperament(),0.4f, 0.01f, 2, 0.8f, event.getX(), event.getY(), cr, cg, cb));
+			} else if (counter%5 == 0) {
+				sContainer.add(new SoundData(ionicTemperament01(),0.4f, 0.01f, 2, 0.8f, event.getX(), event.getY(), cr, cg, cb));	
+			}
+
 			container.add(new Circle(r, x, y, dx, dy, m, cr, cg, cb));
 		}
 		return true;
@@ -250,91 +267,5 @@ public class MainView extends SurfaceView implements SurfaceHolder.Callback, Run
 	{
 		this.gx = gx;
 		this.gy = gy;
-	}
-
-	public float temperament() {
-		int rnd = (int) (Math.random()*10);
-		float frequency;
-		switch (rnd) {
-		case 0:
-			frequency = 440;
-			break;
-
-		case 1:
-			frequency = 495;
-			break;
-
-		case 2:
-			frequency = 550;
-			break;
-
-		case 3:
-			frequency = 586;
-			break;
-
-		case 4:
-			frequency = 660;
-			break;
-
-		case 5:
-			frequency = 733;
-			break;
-
-		case 6:
-			frequency = 825;
-			break;
-
-		case 7:
-			frequency = 880;
-			break;
-
-		default:
-			frequency = (float) (440 * Math.pow(2, ((1.0 / 12.0) * 20 * Math.random())));
-			break;
-		}
-		return frequency;
-	}
-
-	public float pitaTemperament() {
-		int rnd = (int) (Math.random()*10) + 1;
-		float frequency;
-		switch (rnd) {
-		case 0:
-			frequency = 220;
-			break;
-
-		case 1:
-			frequency = 246;
-			break;
-
-		case 2:
-			frequency = 278;
-			break;
-
-		case 3:
-			frequency = 293;
-			break;
-
-		case 4:
-			frequency = 330;
-			break;
-
-		case 5:
-			frequency = 369;
-			break;
-
-		case 6:
-			frequency = 415;
-			break;
-
-		case 7:
-			frequency = 440;
-			break;
-
-		default:
-			frequency = (float) (440 * Math.pow(2, ((1.0 / 12.0) * 20 * Math.random())));
-			break;
-		}
-		return frequency;
 	}
 }

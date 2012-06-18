@@ -27,8 +27,8 @@ public class Circle
 		this.dx = dx;
 		this.dy = dy;
 		this.m = m;
-		this.cr = cr;
-		this.cg = cg;
-		this.cb = cb;
+		this.cr = cr - 30;
+		this.cg = cg - 30;
+		this.cb = cb - 30;
 	}
 }

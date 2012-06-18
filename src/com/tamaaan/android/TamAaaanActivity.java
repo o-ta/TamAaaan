@@ -1,6 +1,7 @@
 package com.tamaaan.android;
 
 import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -10,8 +11,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
-public class TamAaaanActivity extends Activity implements SensorEventListener
+public class TamAaaanActivity extends Activity  implements SensorEventListener
 {
 	private SensorManager sensorManager;
 	private Sensor accelerometer;
@@ -23,7 +26,9 @@ public class TamAaaanActivity extends Activity implements SensorEventListener
 
 		// 画面を縦表示で固定
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 		//センサーマネージャの取得
